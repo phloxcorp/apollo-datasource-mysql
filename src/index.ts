@@ -1,6 +1,11 @@
 import { DataSource } from 'apollo-datasource'
 import { Pool, QueryOptions, FieldInfo, PoolConnection } from 'mysql'
 
+interface QueryResponse<T> {
+  results?: T[] & { insertId: number } & { affectedRows: number };
+  fields?: FieldInfo[];
+}
+
 export class MysqlDataSource extends DataSource {
   private pool: Pool
 
@@ -9,8 +14,8 @@ export class MysqlDataSource extends DataSource {
     this.pool = pool
   }
 
-  query(options: QueryOptions): Promise<{ results?: any; fields?: FieldInfo[] }>;
-  query(sql: string, values?: any): Promise<{ results?: any; fields?: FieldInfo[] }>;
+  query<T>(options: QueryOptions): Promise<QueryResponse<T>>;
+  query<T>(sql: string, values?: any): Promise<QueryResponse<T>>;
   query(arg: any, values?: any) {
     if (values) {
       return new Promise((resolve, reject) => {
