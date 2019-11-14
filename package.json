@@ -2,6 +2,7 @@
   "name": "apollo-datasource-mysql",
   "version": "1.0.0",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "license": "MIT",
   "dependencies": {
     "apollo-datasource": "^0.6.3"
