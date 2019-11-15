@@ -2,8 +2,8 @@ import { DataSource } from 'apollo-datasource'
 import { Pool, QueryOptions, FieldInfo, PoolConnection } from 'mysql'
 
 interface QueryResponse<T> {
-  results?: T[] & { insertId: number } & { affectedRows: number };
-  fields?: FieldInfo[];
+  results: T[] & { insertId: number } & { affectedRows: number };
+  fields: FieldInfo[];
 }
 
 class PoolConnectionPromise {
