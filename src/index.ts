@@ -80,7 +80,7 @@ export function getConnectionPromise(pool: Pool): Promise<PoolConnectionPromise>
   })
 }
 
-export class MysqlDataSource extends DataSource {
+export class MysqlDataSource<TContext> extends DataSource<TContext> {
   private pool: Pool
 
   constructor(pool: Pool) {
