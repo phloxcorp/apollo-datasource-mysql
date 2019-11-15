@@ -6,6 +6,68 @@ interface QueryResponse<T> {
   fields?: FieldInfo[];
 }
 
+class PoolConnectionPromise {
+  private connection: PoolConnection
+
+  constructor(connection: PoolConnection) {
+    this.connection = connection
+  }
+
+  query<T>(options: QueryOptions): Promise<QueryResponse<T>>;
+  query<T>(sql: string, values?: any): Promise<QueryResponse<T>>;
+  query(arg: any, values?: any) {
+    if (values) {
+      return new Promise((resolve, reject) => {
+        this.connection.query(arg, values, (err, results, fields) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve({ results, fields })
+          }
+        })
+      })
+    } else {
+      return new Promise((resolve, reject) => {
+        this.connection.query(arg, (err, results, fields) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve({ results, fields })
+          }
+        })
+      })
+    }
+  }
+
+  commit(options?: QueryOptions): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.connection.commit(options, (err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
+
+  rollback(options?: QueryOptions): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.connection.rollback(options, (err) => {
+        if (err) {
+          reject(err)
+        } else {
+          resolve()
+        }
+      })
+    })
+  }
+
+  release() {
+    this.connection.release()
+  }
+}
+
 export class MysqlDataSource extends DataSource {
   private pool: Pool
 
@@ -40,13 +102,13 @@ export class MysqlDataSource extends DataSource {
     }
   }
 
-  getConnection(): Promise<PoolConnection> {
+  getConnection(): Promise<PoolConnectionPromise> {
     return new Promise((resolve, reject) => {
       this.pool.getConnection((err, connection) => {
         if (err) {
           reject(err)
         } else {
-          resolve(connection)
+          resolve(new PoolConnectionPromise(connection))
         }
       })
     })
