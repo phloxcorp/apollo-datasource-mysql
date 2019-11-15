@@ -68,6 +68,18 @@ class PoolConnectionPromise {
   }
 }
 
+export function getConnectionPromise(pool: Pool): Promise<PoolConnectionPromise> {
+  return new Promise((resolve, reject) => {
+    pool.getConnection((err, connection) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(new PoolConnectionPromise(connection))
+      }
+    })
+  })
+}
+
 export class MysqlDataSource extends DataSource {
   private pool: Pool
 
@@ -103,14 +115,6 @@ export class MysqlDataSource extends DataSource {
   }
 
   getConnection(): Promise<PoolConnectionPromise> {
-    return new Promise((resolve, reject) => {
-      this.pool.getConnection((err, connection) => {
-        if (err) {
-          reject(err)
-        } else {
-          resolve(new PoolConnectionPromise(connection))
-        }
-      })
-    })
+    return getConnectionPromise(this.pool)
   }
 }
