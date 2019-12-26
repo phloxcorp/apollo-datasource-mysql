@@ -6,7 +6,7 @@ interface QueryResponse<T> {
   fields: FieldInfo[];
 }
 
-class PoolConnectionPromise {
+export class PoolConnectionPromise {
   private connection: PoolConnection
 
   constructor(connection: PoolConnection) {
