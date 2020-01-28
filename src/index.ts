@@ -1,4 +1,4 @@
-import { DataSource } from 'apollo-datasource'
+import { DataSource, DataSourceConfig } from 'apollo-datasource'
 import { Pool, QueryOptions, FieldInfo, PoolConnection } from 'mysql'
 
 interface QueryResponse<T> {
@@ -82,10 +82,15 @@ export function getConnectionPromise(pool: Pool): Promise<PoolConnectionPromise>
 
 export class MysqlDataSource<TContext> extends DataSource<TContext> {
   private pool: Pool
+  protected context!: TContext
 
   constructor(pool: Pool) {
     super()
     this.pool = pool
+  }
+
+  initialize(config: DataSourceConfig<TContext>) {
+    this.context = config.context
   }
 
   query<T>(options: QueryOptions): Promise<QueryResponse<T>>;
