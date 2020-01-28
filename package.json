@@ -10,7 +10,7 @@
     "url": "https://github.com/phloxcorp/apollo-datasource-mysql.git"
   },
   "dependencies": {
-    "apollo-datasource": "^0.6.3"
+    "apollo-datasource": "^0.7.0"
   },
   "devDependencies": {
     "@types/mysql": "^2.15.8",
